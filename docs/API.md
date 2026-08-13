@@ -1,30 +1,48 @@
-# API Reference
+# Vaultkey API Reference
 
-The Vaultkey server provides WebAuthn registration/login and vault sync endpoints.
+The Vaultkey server provides WebAuthn registration/login, vault sync, and secret/note management endpoints.
 
 ## Base URL
 
+Development:
+
+```text
+http://localhost:8000
 ```
-http://localhost:8080
+
+Docker Deployment:
+
+```text
+http://localhost:8443
 ```
+
+---
 
 ## Authentication
 
-Most endpoints require a JWT token obtained from the login endpoint. Include it in request headers:
+Most endpoints require a JWT token obtained from the login endpoint.
 
-```
+Include it in request headers:
+
+```http
 Authorization: Bearer <jwt-token>
 ```
 
-## WebAuthn Flow
+---
 
-### 1. Start Registration
+# WebAuthn Flow
 
-**Endpoint**: `POST /register/start`
+## 1. Start Registration
+
+**Endpoint**
+
+```http
+POST /register/start
+```
 
 Initialize WebAuthn registration.
 
-**Request**:
+### Request
 
 ```json
 {
@@ -32,7 +50,7 @@ Initialize WebAuthn registration.
 }
 ```
 
-**Response** (200 OK):
+### Response (200 OK)
 
 ```json
 {
@@ -52,9 +70,13 @@ Initialize WebAuthn registration.
         {
           "alg": -7,
           "type": "public-key"
+        },
+        {
+          "alg": -257,
+          "type": "public-key"
         }
       ],
-      "timeout": 808000,
+      "timeout": 60000,
       "attestation": "none"
     }
   },
@@ -62,13 +84,19 @@ Initialize WebAuthn registration.
 }
 ```
 
-### 2. Complete Registration
+---
 
-**Endpoint**: `POST /register/finish`
+## 2. Complete Registration
+
+**Endpoint**
+
+```http
+POST /register/finish
+```
 
 Finish WebAuthn registration with attestation response.
 
-**Request**:
+### Request
 
 ```json
 {
@@ -86,21 +114,23 @@ Finish WebAuthn registration with attestation response.
 }
 ```
 
-**Response** (200 OK):
+### Response
 
 ```json
-{
-  "success": true
-}
+"Registration successful"
 ```
 
-### 3. Start Login
+---
 
-**Endpoint**: `POST /login/start`
+## 3. Start Login
 
-Initiate WebAuthn authentication.
+**Endpoint**
 
-**Request**:
+```http
+POST /login/start
+```
+
+### Request
 
 ```json
 {
@@ -108,31 +138,31 @@ Initiate WebAuthn authentication.
 }
 ```
 
-**Response** (200 OK):
+### Response
 
 ```json
 {
   "publicKey": {
     "challenge": "base64-challenge",
     "rpId": "localhost",
-    "allowCredentials": [
-      {
-        "type": "public-key",
-        "id": "base64-credential-id"
-      }
-    ],
-    "userVerification": "required"
+    "allowCredentials": [],
+    "userVerification": "required",
+    "timeout": 60000
   }
 }
 ```
 
-### 4. Complete Login
+---
 
-**Endpoint**: `POST /login/finish`
+## 4. Complete Login
 
-Complete authentication with signed assertion.
+**Endpoint**
 
-**Request**:
+```http
+POST /login/finish
+```
+
+### Request
 
 ```json
 {
@@ -151,38 +181,174 @@ Complete authentication with signed assertion.
 }
 ```
 
-**Response** (200 OK):
+### Response
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "jwt-token"
 }
 ```
 
-**Errors**:
+### Errors
 
 - `400 Bad Request` - Invalid request format
 - `401 Unauthorized` - Authentication failed
 - `404 Not Found` - User not found
 
-## Vault Operations
+---
 
-All vault endpoints require JWT authentication.
+# Secret Management
 
-### Upload Vault
+All secret endpoints require JWT authentication.
 
-**Endpoint**: `PUT /vault`
+## List Secrets
 
-Upload encrypted vault data to the server.
-
-**Headers**:
-
-```
-Authorization: Bearer <token>
-Content-Type: application/json
+```http
+GET /vault/secrets
 ```
 
-**Request**:
+### Response
+
+```json
+[
+  {
+    "name": "github",
+    "username": "user@email.com",
+    "password": "secret-password",
+    "url": "https://github.com",
+    "notes": "My GitHub account",
+    "category": "Development"
+  }
+]
+```
+
+---
+
+## Add Secret
+
+```http
+POST /vault/secrets
+```
+
+### Request
+
+```json
+{
+  "name": "github",
+  "username": "user@email.com",
+  "password": "secret-password",
+  "url": "https://github.com",
+  "notes": "My GitHub account",
+  "category": "Development"
+}
+```
+
+### Response
+
+Returns the created secret.
+
+---
+
+## Get Secret
+
+```http
+GET /vault/secrets/{name}
+```
+
+### Response
+
+```json
+{
+  "name": "github",
+  "username": "user@email.com",
+  "password": "secret-password",
+  "url": "https://github.com",
+  "notes": "My GitHub account",
+  "category": "Development"
+}
+```
+
+---
+
+## Delete Secret
+
+```http
+DELETE /vault/secrets/{name}
+```
+
+### Response
+
+```json
+"Secret deleted"
+```
+
+---
+
+# Note Management
+
+## List Notes
+
+```http
+GET /vault/notes
+```
+
+### Response
+
+```json
+[
+  {
+    "title": "Recovery Codes",
+    "content": "My recovery codes...",
+    "category": "Security"
+  }
+]
+```
+
+---
+
+## Add Note
+
+```http
+POST /vault/notes
+```
+
+### Request
+
+```json
+{
+  "title": "Recovery Codes",
+  "content": "My recovery codes...",
+  "category": "Security"
+}
+```
+
+---
+
+## Get Note
+
+```http
+GET /vault/notes/{title}
+```
+
+---
+
+## Delete Note
+
+```http
+DELETE /vault/notes/{title}
+```
+
+---
+
+# Vault Blob Operations
+
+## Upload Vault
+
+```http
+PUT /vault
+```
+
+### Request
 
 ```json
 {
@@ -191,223 +357,135 @@ Content-Type: application/json
 }
 ```
 
-**Response** (200 OK):
+---
+
+## Download Vault
+
+```http
+GET /vault
+```
+
+Returns encrypted vault data.
+
+---
+
+## Delete Vault
+
+```http
+DELETE /vault
+```
+
+---
+
+# Health Check
+
+```http
+GET /health
+```
+
+### Response
 
 ```json
-{
-  "success": true,
-  "size": 2048
-}
+"ok"
 ```
 
-### Download Vault
+---
 
-**Endpoint**: `GET /vault`
+# CORS
 
-Retrieve encrypted vault data from the server.
+CORS is enabled for all origins in development.
 
-**Headers**:
+For production deployments, restrict access to trusted origins.
 
-```
-Authorization: Bearer <token>
-```
+---
 
-**Response** (200 OK):
+# Error Responses
 
-```
-<binary encrypted vault data>
-```
-
-**Headers**:
-
-```
-Content-Type: application/octet-stream
-Content-Length: 2048
-```
-
-### Delete Vault
-
-**Endpoint**: `DELETE /vault`
-
-Remove vault from the server.
-
-**Headers**:
-
-```
-Authorization: Bearer <token>
-```
-
-**Response** (204 No Content):
-
-```
-(empty body)
-```
-
-### Vault Status
-
-**Endpoint**: `GET /vault/status`
-
-Check vault existence and metadata.
-
-**Headers**:
-
-```
-Authorization: Bearer <token>
-```
-
-**Response** (200 OK):
+## 400 Bad Request
 
 ```json
-{
-  "exists": true,
-  "size": 2048,
-  "last_updated": "2024-01-15T10:30:00Z",
-  "version": 1
-}
+"Invalid request"
 ```
 
-## Error Responses
-
-### 400 Bad Request
-
-```json
-"Invalid request format"
-```
-
-Common causes:
-
-- Missing required fields
-- Invalid JSON
-- Invalid data types
-
-### 401 Unauthorized
+## 401 Unauthorized
 
 ```json
 "Unauthorized"
 ```
 
-Common causes:
-
-- Missing JWT token
-- Expired token
-- Invalid signature
-
-### 404 Not Found
+## 404 Not Found
 
 ```json
 "Not found"
 ```
 
-Common causes:
-
-- User doesn't exist
-- Vault not found
-
-### 500 Internal Server Error
+## 500 Internal Server Error
 
 ```json
 "Internal server error"
 ```
 
-Indicates a server-side issue. Check server logs.
+---
 
-## Rate Limiting
+# Rate Limiting
 
-**Status**: Not currently implemented
+**Current Status:** Not implemented
 
-Production deployments should implement rate limiting:
+Recommended production limits:
 
-- Authentication attempts: 5 per minute per IP
-- Vault operations: 100 per hour per user
-- Account registration: 10 per hour per IP
-
-## HTTPS and Security
-
-The API supports both HTTP and HTTPS. For production:
-
-1. **Use HTTPS only**
-   - Protects against man-in-the-middle attacks
-   - Required for security
-
-2. **Configure CORS**
-   - Restrict to trusted origins
-   - Prevent unauthorized cross-origin requests
-
-3. **Set Security Headers**
-   ```
-   Strict-Transport-Security: max-age=31536000
-   X-Content-Type-Options: nosniff
-   X-Frame-Options: DENY
-   ```
-
-## Example: Client Flow
-
-```bash
-# 1. Start registration
-curl -X POST http://localhost:8080/register/start \
-  -H "Content-Type: application/json" \
-  -d '{"username":"alice"}'
-
-# 2. [Client processes challenge, gets credential]
-
-# 3. Complete registration
-curl -X POST http://localhost:8080/register/finish \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username":"alice",
-    "user_id":"...",
-    "registration":{...}
-  }'
-
-# 4. Start login
-curl -X POST http://localhost:8080/login/start \
-  -H "Content-Type: application/json" \
-  -d '{"username":"alice"}'
-
-# 5. [Client processes challenge, signs assertion]
-
-# 6. Complete login
-curl -X POST http://localhost:8080/login/finish \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username":"alice",
-    "authentication":{...}
-  }'
-
-# 7. Upload vault (with token)
-curl -X PUT http://localhost:8080/vault \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"data":"...","version":1}'
-
-# 8. Download vault
-curl -X GET http://localhost:8080/vault \
-  -H "Authorization: Bearer $TOKEN" \
-  -o vault.bin
-```
-
-## Versioning
-
-The API is versioned via the `version` field in vault uploads. Current version: `1`
-
-Breaking changes will increment the version. Clients should validate the version when downloading.
-
-## Changelog
-
-### v1.0
-
-- WebAuthn registration and login
-- Vault upload/download
-- JWT authentication
-- Vault status endpoint
-
-### Planned for v1.1
-
-- Rate limiting
-- Audit logging
-- User metadata
-- Backup/restore endpoints
+- Authentication: 5 attempts/minute/IP
+- Vault operations: 100 requests/hour/user
+- Registration: 10 requests/hour/IP
 
 ---
 
-For more details on WebAuthn, see [webauthn-rs documentation](https://github.com/kanidm/webauthn-rs).
+# Example Client Flow
+
+```bash
+curl -X POST http://localhost:8000/register/start \
+-H "Content-Type: application/json" \
+-d '{"username":"alice"}'
+```
+
+```bash
+curl -X POST http://localhost:8000/register/finish \
+-H "Content-Type: application/json" \
+-d '{"username":"alice","user_id":"...","registration":{...}}'
+```
+
+```bash
+curl -X POST http://localhost:8000/login/start \
+-H "Content-Type: application/json" \
+-d '{"username":"alice"}'
+```
+
+```bash
+curl -X POST http://localhost:8000/login/finish \
+-H "Content-Type: application/json" \
+-d '{"username":"alice","authentication":{...}}'
+```
+
+```bash
+curl -X POST http://localhost:8000/vault/secrets \
+-H "Authorization: Bearer $TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"name":"github","username":"user","password":"pass"}'
+```
+
+```bash
+curl -X GET http://localhost:8000/vault/secrets \
+-H "Authorization: Bearer $TOKEN"
+```
+
+---
+
+# Versioning
+
+Current API Version:
+
+```text
+v1
+```
+
+Breaking changes will be announced in future releases.
+Clients should always validate server responses.

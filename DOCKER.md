@@ -4,8 +4,8 @@
 
 ### Prerequisites
 
-- Docker installed
-- Docker Compose installed
+- Docker Desktop installed (https://docker.com)
+- That's it! No other dependencies needed.
 
 ### Deploy
 
