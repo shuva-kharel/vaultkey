@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <header>
+        <img src="../icons/icon48.png" alt="Vaultkey" class="logo" />
+        <h1>Vaultkey</h1>
+      </header>
+
+      <div id="not-logged-in" class="hidden">
+        <p>Connect to Vaultkey to manage your passwords</p>
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Username" />
+        </div>
+        <div class="login-options">
+          <button id="login-btn" class="btn primary">Login with Passkey</button>
+          <button id="register-btn" class="btn secondary">
+            Register with Passkey
+          </button>
+          <div class="divider">or</div>
+          <button id="pin-login-btn" class="btn outline">Login with PIN</button>
+        </div>
+        <div id="pin-section" class="hidden">
+          <input
+            type="password"
+            id="pin-input"
+            placeholder="Enter PIN"
+            maxlength="6"
+          />
+          <button id="pin-submit-btn" class="btn primary">Unlock</button>
+        </div>
+      </div>
+
+      <div id="logged-in" class="hidden">
+        <div class="search-bar">
+          <input type="text" id="search" placeholder="Search passwords..." />
+        </div>
+        <div id="password-list" class="password-list"></div>
+        <button id="generate-btn" class="btn secondary">
+          Generate Password
+        </button>
+        <button id="settings-btn" class="btn secondary">Settings</button>
+        <button id="logout-btn" class="btn danger">Logout</button>
+      </div>
+
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Please wait...</p>
+      </div>
+
+      <div id="status-message"></div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

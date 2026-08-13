@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #1a1a2e;
+  color: #ffffff;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #16213e;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #4caf50;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.settings-section {
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.settings-section h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #81c784;
+}
+
+.settings-section label {
+  display: block;
+  margin-bottom: 8px;
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.settings-section input[type="text"],
+.settings-section input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background: #0a0a1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.settings-section input[type="text"]:focus,
+.settings-section input[type="number"]:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.settings-section input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.settings-section label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+#save-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#save-btn:hover {
+  background: #45a049;
+}
+
+#save-btn:active {
+  transform: scale(0.98);
+}
+
+/* Add some spacing and visual improvements */
+.settings-section:last-of-type {
+  margin-bottom: 30px;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px;
+  }
+
+  .settings-section {
+    padding: 15px;
+  }
+}

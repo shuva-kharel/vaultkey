@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="options.css" />
+    <title>Vaultkey Settings</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Vaultkey Settings</h1>
+
+      <div class="settings-section">
+        <h2>Server</h2>
+        <label>Server URL:</label>
+        <input type="text" id="server-url" value="http://localhost:8000" />
+      </div>
+
+      <div class="settings-section">
+        <h2>Clipboard</h2>
+        <label>Auto-clear timeout (seconds):</label>
+        <input
+          type="number"
+          id="clipboard-timeout"
+          value="30"
+          min="5"
+          max="300"
+        />
+      </div>
+
+      <div class="settings-section">
+        <h2>Auto-fill</h2>
+        <label>
+          <input type="checkbox" id="auto-fill" checked />
+          Enable auto-fill on page load
+        </label>
+      </div>
+
+      <button id="save-btn">Save Settings</button>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

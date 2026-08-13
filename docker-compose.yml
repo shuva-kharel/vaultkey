@@ -1,0 +1,51 @@
+services:
+  vaultkey-server:
+    build:
+      context: ./vaultkey-server
+      dockerfile: Dockerfile
+    container_name: vaultkey-server
+    ports:
+      - "8000:8000"
+    volumes:
+      - vaultkey-data:/app/data
+      - vaultkey-storage:/app/storage
+    environment:
+      - VAULTKEY_LISTEN_ADDR=0.0.0.0
+      - VAULTKEY_LISTEN_PORT=8000
+      - VAULTKEY_DATABASE_URL=sqlite:///app/data/vaultkey.db
+      - VAULTKEY_RP_ID=localhost
+      - VAULTKEY_RP_ORIGIN=http://localhost:3000
+      - VAULTKEY_STORAGE_ROOT=/app/storage
+      - VAULTKEY_JWT_SECRET=change-me-to-a-long-random-string
+      - VAULTKEY_JWT_EXPIRATION_HOURS=24
+    restart: unless-stopped
+    networks:
+      - vaultkey-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vaultkey-web:
+    build:
+      context: ./vaultkey-web
+      dockerfile: Dockerfile
+    container_name: vaultkey-web
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - vaultkey-server
+    restart: unless-stopped
+    networks:
+      - vaultkey-network
+
+volumes:
+  vaultkey-data:
+  vaultkey-storage:
+
+networks:
+  vaultkey-network:
+    driver: bridge

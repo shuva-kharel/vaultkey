@@ -54,7 +54,7 @@ Initialize WebAuthn registration.
           "type": "public-key"
         }
       ],
-      "timeout": 300000,
+      "timeout": 808000,
       "attestation": "none"
     }
   },

@@ -1,0 +1,294 @@
+:root {
+  --primary: #4caf50;
+  --primary-dark: #45a049;
+  --danger: #f44336;
+  --warning: #ff9800;
+  --background: #1a1a2e;
+  --surface: #16213e;
+  --text: #ffffff;
+  --text-secondary: #a0a0a0;
+  --border: #2a2a4a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Login Screen */
+#login-screen h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+#login-screen p {
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+}
+
+input,
+textarea {
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 16px;
+  width: 100%;
+}
+
+button {
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+/* Main App */
+#main-screen {
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.user-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+nav {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: var(--surface);
+  border-radius: 10px;
+}
+
+.nav-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.nav-btn.active {
+  background: var(--primary);
+}
+
+.section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+}
+
+.toolbar input {
+  flex: 1;
+}
+
+.secret-item,
+.note-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: var(--surface);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.secret-info h3,
+.note-info h3 {
+  margin-bottom: 5px;
+}
+
+.secret-info p,
+.note-info p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.secret-actions,
+.note-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.secret-actions button,
+.note-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--surface);
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Generate Section */
+.generate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 10px;
+}
+
+#generated-password {
+  padding: 15px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+/* Status Message */
+#status-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.success {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.error {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+/* Password display */
+.password-display {
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.password-display:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.passkey-info {
+  margin-top: 30px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 10px;
+  max-width: 400px;
+  text-align: left;
+}
+
+.passkey-info p {
+  margin-bottom: 10px;
+}
+
+.passkey-info ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.passkey-info li {
+  padding: 8px 0;
+  color: var(--text-secondary);
+}
+
+.passkey-info li:before {
+  content: "• ";
+  color: var(--primary);
+}

@@ -1,0 +1,6 @@
+target
+data
+storage
+server.toml
+.git
+.gitignore

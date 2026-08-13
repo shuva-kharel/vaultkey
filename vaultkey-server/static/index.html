@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vaultkey - Password Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Login Screen -->
+      <div id="login-screen" class="screen">
+        <h1>🔐 Vaultkey</h1>
+        <p>Hardware-backed password manager</p>
+        <div class="login-form">
+          <input type="text" id="username" placeholder="Username" />
+          <button id="login-btn" onclick="login()">Login with Passkey</button>
+          <button id="register-btn" onclick="register()">
+            Register New User
+          </button>
+        </div>
+        <div id="status-message"></div>
+        <div class="passkey-info">
+          <p>💡 <strong>Need a passkey?</strong></p>
+          <p>Use one of these options:</p>
+          <ul>
+            <li>Windows Hello (Settings → Accounts → Sign-in options → PIN)</li>
+            <li>ProtonPass browser extension</li>
+            <li>1Password or Bitwarden extension</li>
+            <li>Physical security key (YubiKey, etc.)</li>
+            <li>Phone passkey (iPhone/Android)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Main App -->
+      <div id="main-screen" class="screen hidden">
+        <header>
+          <h1>🔐 Vaultkey</h1>
+          <div class="user-info">
+            <span id="current-user"></span>
+            <button onclick="logout()">Logout</button>
+          </div>
+        </header>
+
+        <div class="main-content">
+          <nav>
+            <button class="nav-btn active" onclick="showSection('secrets')">
+              Secrets
+            </button>
+            <button class="nav-btn" onclick="showSection('notes')">
+              Notes
+            </button>
+            <button class="nav-btn" onclick="showSection('generate')">
+              Generate
+            </button>
+          </nav>
+
+          <!-- Secrets Section -->
+          <div id="secrets-section" class="section">
+            <div class="toolbar">
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Search secrets..."
+                oninput="searchSecrets()"
+              />
+              <button onclick="showAddSecret()">+ Add Secret</button>
+            </div>
+            <div id="secrets-list"></div>
+          </div>
+
+          <!-- Notes Section -->
+          <div id="notes-section" class="section hidden">
+            <div class="toolbar">
+              <button onclick="showAddNote()">+ Add Note</button>
+            </div>
+            <div id="notes-list"></div>
+          </div>
+
+          <!-- Generate Section -->
+          <div id="generate-section" class="section hidden">
+            <div class="generate-form">
+              <label
+                >Password Length: <span id="length-display">20</span></label
+              >
+              <input
+                type="range"
+                id="password-length"
+                min="8"
+                max="64"
+                value="20"
+                oninput="updateLength()"
+              />
+              <label
+                ><input type="checkbox" id="gen-uppercase" checked />
+                Uppercase</label
+              >
+              <label
+                ><input type="checkbox" id="gen-lowercase" checked />
+                Lowercase</label
+              >
+              <label
+                ><input type="checkbox" id="gen-numbers" checked />
+                Numbers</label
+              >
+              <label
+                ><input type="checkbox" id="gen-symbols" checked />
+                Symbols</label
+              >
+              <button onclick="generatePassword()">Generate Password</button>
+              <div id="generated-password"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Secret Modal -->
+      <div id="add-secret-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>Add Secret</h2>
+          <input
+            type="text"
+            id="secret-name"
+            placeholder="Name (e.g., github)"
+          />
+          <input type="text" id="secret-username" placeholder="Username" />
+          <input type="password" id="secret-password" placeholder="Password" />
+          <button onclick="generateAndFill()">Generate</button>
+          <input type="text" id="secret-url" placeholder="URL (optional)" />
+          <input
+            type="text"
+            id="secret-category"
+            placeholder="Category (optional)"
+          />
+          <textarea id="secret-notes" placeholder="Notes (optional)"></textarea>
+          <div class="modal-buttons">
+            <button onclick="saveSecret()">Save</button>
+            <button onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Note Modal -->
+      <div id="add-note-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>Add Note</h2>
+          <input type="text" id="note-title" placeholder="Title" />
+          <textarea id="note-content" placeholder="Note content"></textarea>
+          <input
+            type="text"
+            id="note-category"
+            placeholder="Category (optional)"
+          />
+          <div class="modal-buttons">
+            <button onclick="saveNote()">Save</button>
+            <button onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="webauthn.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

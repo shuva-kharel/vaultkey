@@ -4,8 +4,10 @@ mod error;
 mod middleware;
 mod vault;
 mod webauthn;
+mod api;
 
 use actix_web::{web, App, HttpServer, middleware as actix_middleware};
+use actix_cors::Cors;
 use anyhow::Result;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -54,8 +56,16 @@ async fn main() -> Result<()> {
     let state = web::Data::new(state);
 
     HttpServer::new(move || {
+        // Configure CORS
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header()
+            .max_age(3600);
+
         App::new()
             .app_data(state.clone())
+            .wrap(cors)
             .wrap(actix_middleware::Logger::default())
             .route("/register/start", web::post().to(webauthn::register_start))
             .route("/register/finish", web::post().to(webauthn::register_finish))
@@ -66,7 +76,15 @@ async fn main() -> Result<()> {
                     .wrap(middleware::JwtAuth)
                     .route("", web::get().to(vault::get_vault))
                     .route("", web::put().to(vault::put_vault))
-                    .route("", web::delete().to(vault::delete_vault)),
+                    .route("", web::delete().to(vault::delete_vault))
+                    .route("/secrets", web::get().to(api::list_secrets))
+                    .route("/secrets", web::post().to(api::add_secret))
+                    .route("/secrets/{name}", web::get().to(api::get_secret))
+                    .route("/secrets/{name}", web::delete().to(api::delete_secret))
+                    .route("/notes", web::get().to(api::list_notes))
+                    .route("/notes", web::post().to(api::add_note))
+                    .route("/notes/{title}", web::get().to(api::get_note))
+                    .route("/notes/{title}", web::delete().to(api::delete_note))
             )
             .route("/health", web::get().to(|| async { "ok" }))
     })
